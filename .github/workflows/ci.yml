@@ -1,0 +1,107 @@
+concurrency:
+  cancel-in-progress: true
+  group: ci-${{ github.ref }}
+
+jobs:
+  android-acceptance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          cache: true
+          channel: stable
+          flutter-version: 3.47.4
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
+        with:
+          api-level: 34
+          arch: x86_64
+          script: flutter test integration_test
+          target: google_apis
+
+  android-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          cache: true
+          channel: stable
+          flutter-version: 3.47.4
+      - run: flutter build apk --release
+      # NF-4: the release build must not declare the INTERNET permission
+      - name: Check the release build has no INTERNET permission
+        run: |
+          aapt2="$(find "$ANDROID_HOME/build-tools" -name aapt2 | sort | tail -n 1)"
+          permissions="$("$aapt2" dump permissions build/app/outputs/flutter-apk/app-release.apk)"
+          echo "$permissions"
+          if echo "$permissions" | grep -q 'android.permission.INTERNET'; then
+            echo "::error::The release build declares the INTERNET permission"
+            exit 1
+          fi
+
+  ios-acceptance:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          cache: true
+          channel: stable
+          flutter-version: 3.47.4
+      - name: Boot an iPhone simulator
+        run: |
+          udid="$(xcrun simctl list devices available -j | python3 -c "import json,sys; d=json.load(sys.stdin)['devices']; print(next(x['udid'] for r in sorted(d, reverse=True) if 'iOS' in r for x in d[r] if x['name'].startswith('iPhone')))")"
+          xcrun simctl boot "$udid"
+          xcrun simctl bootstatus "$udid"
+          echo "SIMULATOR_UDID=$udid" >> "$GITHUB_ENV"
+      - run: flutter test integration_test -d "$SIMULATOR_UDID"
+
+  ios-build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          cache: true
+          channel: stable
+          flutter-version: 3.47.4
+      - run: flutter build ios --release --no-codesign
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          cache: true
+          channel: stable
+          flutter-version: 3.47.4
+      - run: flutter pub get
+      - run: dart format --output=none --set-exit-if-changed lib test integration_test
+      - run: flutter analyze
+      - run: flutter test
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read

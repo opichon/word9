@@ -3,5 +3,9 @@ updates:
     package-ecosystem: github-actions
     schedule:
       interval: weekly
+  - directory: /
+    package-ecosystem: pub
+    schedule:
+      interval: weekly
 
 version: 2
