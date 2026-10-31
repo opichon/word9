@@ -7,21 +7,7 @@ import 'package:word9/game/banners.dart';
 import 'package:word9/game/board.dart';
 import 'package:word9/game/puzzles.dart';
 
-/// A random source that always returns the same index.
-class FixedRandom implements Random {
-  FixedRandom(this.value);
-
-  final int value;
-
-  @override
-  int nextInt(int max) => value % max;
-
-  @override
-  bool nextBool() => false;
-
-  @override
-  double nextDouble() => 0;
-}
+import '../support/fixed_random.dart';
 
 void main() {
   final book = PuzzleBook.fromJson(
