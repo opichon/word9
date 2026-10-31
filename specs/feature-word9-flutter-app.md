@@ -137,6 +137,9 @@ Unless section 6 lists a difference, word9 matches Nine Tile at commit `3543b45`
 - Variants are labelled "English (UK)" and "English (US)".
 - New text follows the active variant's spelling: "Licences" in en-GB, "Licenses" in en-US.
 - A Privacy policy entry opens the policy in a browser.
+- Test mode applies to the whole app, not per variant.
+- The last chosen level is remembered per variant.
+- Each variant keeps its own saved game.
 
 **Store requirements**
 
@@ -144,9 +147,6 @@ Unless section 6 lists a difference, word9 matches Nine Tile at commit `3543b45`
 - Both stores' privacy forms declare that no data is collected.
 - The test-mode gesture is described in the App Store review notes[^apple-hidden]. If App Review objects, the decision returns to the owner.
 - The app has an icon, approved by the owner, and store screenshots and listing text for both stores.
-- Test mode applies to the whole app, not per variant.
-- The last chosen level is remembered per variant.
-- Each variant keeps its own saved game.
 
 **Performance**
 
@@ -330,7 +330,7 @@ flowchart TD
   Picker -- choose level --> New
   Play -- tap word --> Browser[Dictionary page in browser]
   Revealed -- tap word --> Browser
-  Play -- settings icon --> Settings[Settings: variant, Licences]
+  Play -- settings icon --> Settings[Settings: variant, Licences, Privacy policy]
   Settings -- change variant --> Saved
   Play -- long-press title 3 s --> Toggle[Toggle test mode, discard saved game]
   Toggle --> New
