@@ -15,7 +15,7 @@ sources:
   - id: ninetile-us
     resource: https://github.com/opichon/ninetile/blob/3543b45/src/en-us/index.html
     title: Nine Tile web app, en-US variant
-status: draft
+status: stable
 tags:
   - android
   - flutter

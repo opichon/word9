@@ -8,6 +8,10 @@
 
 ## 2026-10-31
 
+**Update**: [Test plan: word9: offline Flutter app with the same features as Nine Tile](/feature-word9-flutter-app-test-plan.md) merged in #5 and marked stable, unverified.
+
+**Update**: [word9: offline Flutter app with the same features as Nine Tile](/feature-word9-flutter-app.md) merged in #5 and marked stable, unverified.
+
 **Update**: [word9: offline Flutter app with the same features as Nine Tile](/feature-word9-flutter-app.md) merged in #1 and marked stable, unverified.
 
 **Initialization** of the word9 specs bundle.
