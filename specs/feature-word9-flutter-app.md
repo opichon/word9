@@ -26,7 +26,7 @@ sources:
   - id: scowl
     resource: http://wordlist.aspell.net/
     title: SCOWL word lists
-status: stable
+status: draft
 tags:
   - android
   - flutter
@@ -287,18 +287,33 @@ As a Maintainer, I want a hidden test mode in release builds, so that I can chec
 
 ## 9. Rollout
 
-A single release, once all features are in:
+A single release, once all features are in. Until then, the app is available in stages:
+
+| Stage | Available through | Who can use it |
+| ----- | ----------------- | -------------- |
+| During development | Simulator and emulator | Developers |
+| As soon as a first version is playable, and after each change from then on | Diawi, on both platforms | The team, on registered iPhones and any Android phone |
+| Once all features are in and checked | TestFlight and the Google Play internal track, then the Google Play closed test | Testers |
+| Release | App Store and Google Play | Everyone |
 
 - **Delivers:** the whole of this spec, for Android and iOS.
-- **Audience:** first internal testers, through TestFlight and the Google Play internal track. On Android, a closed test follows: Google requires at least 12 opted-in testers for 14 days from a new personal account, then a production-access application[^play-testing]. Then the public, on the App Store and Google Play.
-- **Exit criteria:** all acceptance criteria pass on both platforms in an internal-track build; the closed test has run for 14 days with at least 12 testers and production access is granted; the app is live on both public stores.
+- **Audience:** first the team, through Diawi. Then internal testers, through TestFlight and the Google Play internal track. On Android, a closed test follows: Google requires at least 12 opted-in testers for 14 days from a new personal account, then a production-access application[^play-testing]. Then the public, on the App Store and Google Play.
+- **Exit criteria:** a build installed from Diawi opens with a playable puzzle on an Android phone and a registered iPhone; all acceptance criteria pass on both platforms in an internal-track build; the closed test has run for 14 days with at least 12 testers and production access is granted; the app is live on both public stores.
 
 ## 10. Prerequisites
 
-Nothing is needed before development starts. Before internal testing:
+Nothing is needed before development starts.
 
-- Apple Developer account and a personal Google Play account opened.
-- App identifier and store listing name chosen.
+Before the first Diawi build:
+
+- App identifier: `com.opichon.word9`.
+- Apple Developer account opened, with the test iPhones registered for ad hoc builds.
+- A Diawi account with an API token.
+
+Before internal testing:
+
+- A personal Google Play account opened.
+- Store listing name chosen.
 
 Before the closed test:
 
