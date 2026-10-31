@@ -5,6 +5,12 @@ generated:
   by: claude-code/2.1.316
 id: feature-word9-flutter-app
 sources:
+  - id: android-orientation
+    resource: https://developer.android.com/about/versions/16/behavior-changes-16
+    title: "Android 16 behaviour changes: orientation restrictions on large screens"
+  - id: apple-hidden
+    resource: https://developer.apple.com/news/?id=92th7e5i
+    title: Apple App Review Guidelines update on hidden or undocumented features
   - id: ninetile-build
     resource: https://github.com/opichon/ninetile/blob/3543b45/tools/build_words.py
     title: Nine Tile word-data build script
@@ -14,10 +20,13 @@ sources:
   - id: ninetile-us
     resource: https://github.com/opichon/ninetile/blob/3543b45/src/en-us/index.html
     title: Nine Tile web app, en-US variant
+  - id: play-testing
+    resource: https://support.google.com/googleplay/android-developer/answer/14151465
+    title: Google Play testing requirements for new personal developer accounts
   - id: scowl
     resource: http://wordlist.aspell.net/
     title: SCOWL word lists
-status: stable
+status: draft
 tags:
   - android
   - flutter
@@ -53,7 +62,7 @@ The reference behaviour is Nine Tile at commit `3543b45`:
 | Persona | Impact | Gains | Losses |
 | ------- | ------ | ----- | ------ |
 | Player | Mixed | Plays on a phone or tablet with no browser, connection or account; a game in progress is restored after the app is closed. | No keyboard input; dictionary lookups still need a connection; progress isn't shared with the web app. |
-| Maintainer | Mixed | A native app on both stores; test mode is available in release builds for quick checks. | Word-build rules exist in two repositories and can drift apart; store accounts and releases need upkeep. |
+| Maintainer | Mixed | A native app on both stores; test mode is available in release builds for quick checks. | Word-build rules exist in two repositories and can drift apart; store accounts and releases need upkeep; 12 testers must be found for the Google Play closed test. |
 
 ## 5. Constraints
 
@@ -61,13 +70,13 @@ The reference behaviour is Nine Tile at commit `3543b45`:
 
 - word9 is built with Flutter and ships on Android and iOS only.
 - The minimum OS versions are Flutter's defaults at build time.
-- The app is portrait only.
-- On wider screens, content is centred at a maximum width of 440 pt.
+- The app locks to portrait wherever the OS allows it. Android ignores the lock on screens 600 dp wide or more for apps targeting API 36[^android-orientation], so word9 must also work in landscape there.
+- On wider screens, content is centred at a maximum width of 440 pt. Content that doesn't fit the height scrolls, so nothing is cut off.
 
 **Offline and privacy**
 
-- In airplane mode from a fresh install, every feature works except the dictionary pages. All word data and fonts are in the app package.
-- The app itself makes no network requests. The only network use is the dictionary page opened in a browser when the player taps a word.
+- In airplane mode from a fresh install, every feature works except the dictionary pages and the privacy policy page. All word data and fonts are in the app package.
+- The app itself makes no network requests. The only network use is a page opened in a browser: the dictionary page when the player taps a word, or the privacy policy from settings.
 - There is no account, registration or sign-in.
 - There are no analytics, ads, crash reporting or in-app purchases.
 
@@ -127,9 +136,17 @@ Unless section 6 lists a difference, word9 matches Nine Tile at commit `3543b45`
 - The settings screen is new, as Nine Tile has none. It is opened from an icon in the header.
 - Variants are labelled "English (UK)" and "English (US)".
 - New text follows the active variant's spelling: "Licences" in en-GB, "Licenses" in en-US.
+- A Privacy policy entry opens the policy in a browser.
 - Test mode applies to the whole app, not per variant.
 - The last chosen level is remembered per variant.
 - Each variant keeps its own saved game.
+
+**Store requirements**
+
+- A short privacy policy stating that word9 collects no data is published from this repository with GitHub Pages, at a public URL that needs no login. The URL is entered in both stores.
+- Both stores' privacy forms declare that no data is collected.
+- The test-mode gesture is described in the App Store review notes[^apple-hidden]. If App Review objects, the decision returns to the owner.
+- The app has an icon, approved by the owner, and store screenshots and listing text for both stores.
 
 **Performance**
 
@@ -178,6 +195,8 @@ Out of scope:
 | Player dismisses the level picker (Cancel or tap outside) | The picker closes, and the puzzle and level are unchanged. |
 | Android back button while the level picker is open | The picker closes, and the puzzle and level are unchanged. |
 | Android back button on the main screen or settings screen | The OS's normal back behaviour applies. |
+| Device rotates where the OS overrides the portrait lock | The layout stays centred and scrolls if needed. Found words, the letters being entered and any message are kept. |
+| Privacy policy opened with no connection | The browser shows its own error, and the game state is unaffected. |
 | No saved game for the chosen variant | A new puzzle starts at that variant's last level, or Easy if there is none. |
 | First launch on an en-US device | Variant is en-US. On any other locale, it is en-GB. |
 
@@ -254,6 +273,7 @@ As a Player, I want to choose UK or US English, so that the words and spelling m
 - **Given** the settings screen, opened from a header icon, **when** I choose a variant, **then** the word list, spelling and dictionary change to that variant, and the choice is kept across restarts.
 - **Given** the target variant has a saved game, **when** I switch to it, **then** that game resumes; otherwise a new puzzle starts.
 - **Given** the settings screen, **when** I open Licences, **then** the SCOWL and font notices show.
+- **Given** the settings screen, **when** I tap Privacy policy with a connection, **then** the policy opens in a browser.
 
 ### US-8: Check banners with test mode
 
@@ -270,15 +290,19 @@ As a Maintainer, I want a hidden test mode in release builds, so that I can chec
 A single release, once all features are in:
 
 - **Delivers:** the whole of this spec, for Android and iOS.
-- **Audience:** first internal testers, through TestFlight and the Google Play internal track; then the public, on the App Store and Google Play.
-- **Exit criteria:** all acceptance criteria pass on both platforms in an internal-track build, then the app is live on both public stores.
+- **Audience:** first internal testers, through TestFlight and the Google Play internal track. On Android, a closed test follows: Google requires at least 12 opted-in testers for 14 days from a new personal account, then a production-access application[^play-testing]. Then the public, on the App Store and Google Play.
+- **Exit criteria:** all acceptance criteria pass on both platforms in an internal-track build; the closed test has run for 14 days with at least 12 testers and production access is granted; the app is live on both public stores.
 
 ## 10. Prerequisites
 
 Nothing is needed before development starts. Before internal testing:
 
-- Apple Developer and Google Play accounts opened.
+- Apple Developer account and a personal Google Play account opened.
 - App identifier and store listing name chosen.
+
+Before the closed test:
+
+- At least 12 testers recruited for Google Play.
 
 ## 11. User journey
 
@@ -306,7 +330,7 @@ flowchart TD
   Picker -- choose level --> New
   Play -- tap word --> Browser[Dictionary page in browser]
   Revealed -- tap word --> Browser
-  Play -- settings icon --> Settings[Settings: variant, Licences]
+  Play -- settings icon --> Settings[Settings: variant, Licences, Privacy policy]
   Settings -- change variant --> Saved
   Play -- long-press title 3 s --> Toggle[Toggle test mode, discard saved game]
   Toggle --> New
@@ -323,7 +347,10 @@ Not applicable: new system. The ninetile repository is a read-only reference and
 - `opichon/ninetile` @ `main` (`3543b45`): reference for behaviour and word-data rules.
 - `opichon/word9`: new repository, empty when this spec was written. Not analysed: no code yet.
 
+[^android-orientation]: Android 16 behaviour changes: orientation restrictions on large screens, https://developer.android.com/about/versions/16/behavior-changes-16
+[^apple-hidden]: Apple App Review Guidelines update on hidden or undocumented features, https://developer.apple.com/news/?id=92th7e5i
 [^ninetile-build]: Nine Tile word-data build script, https://github.com/opichon/ninetile/blob/3543b45/tools/build_words.py
 [^ninetile-gb]: Nine Tile web app, en-GB variant, https://github.com/opichon/ninetile/blob/3543b45/src/index.html
 [^ninetile-us]: Nine Tile web app, en-US variant, https://github.com/opichon/ninetile/blob/3543b45/src/en-us/index.html
+[^play-testing]: Google Play testing requirements for new personal developer accounts, https://support.google.com/googleplay/android-developer/answer/14151465
 [^scowl]: SCOWL word lists, http://wordlist.aspell.net/
