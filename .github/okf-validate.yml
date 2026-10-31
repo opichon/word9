@@ -1,0 +1,4 @@
+rules:
+  - paths: [specs/**]
+    spec: ai-xf
+    version: "0.5"
