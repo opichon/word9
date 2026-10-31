@@ -31,7 +31,31 @@ class WordLists {
   bool contains(String word) =>
       _answerSet.contains(word) || _accepted.contains(word);
 
+  /// The answers of a puzzle with these [letters] and [centre] letter, sorted.
+  List<String> solve(List<String> letters, String centre) {
+    final pool = _letterCounts(letters);
+    return answers
+        .where((word) => word.contains(centre) && _fits(word, pool))
+        .toList()
+      ..sort();
+  }
+
   /// The dictionary page for [word].
   Uri dictionaryAddress(String word) =>
       Uri.parse(dictionary + Uri.encodeComponent(word));
+
+  static Map<String, int> _letterCounts(Iterable<String> letters) {
+    final counts = <String, int>{};
+    for (final letter in letters) {
+      counts[letter] = (counts[letter] ?? 0) + 1;
+    }
+    return counts;
+  }
+
+  static bool _fits(String word, Map<String, int> pool) {
+    final counts = _letterCounts(word.split(''));
+    return counts.entries.every(
+      (entry) => (pool[entry.key] ?? 0) >= entry.value,
+    );
+  }
 }
