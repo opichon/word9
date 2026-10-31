@@ -1,0 +1,15 @@
+jobs:
+  okf-approve:
+    if: github.event.action != 'closed' || github.event.pull_request.merged
+    permissions:
+      contents: write
+      pull-requests: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dzangolab/okf-actions/approve@fbccc7f6ba145f6717aaca6708f1983c2475650c # v2.3.0
+
+name: OKF approve
+
+on:
+  pull_request:
+    types: [closed, opened, reopened, synchronize]
