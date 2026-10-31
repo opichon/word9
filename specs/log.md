@@ -12,6 +12,14 @@
 
 ## 2026-10-31
 
+**Update**: [ADR: word-data pipeline](/adr/adr-word-data-pipeline.md) merged in #6 and marked stable, unverified.
+
+**Update**: [Implementation plan: word9: offline Flutter app with the same features as Nine Tile](/feature-word9-flutter-app-plan.md) merged in #6 and marked stable, unverified.
+
+**Update**: [Test plan: word9: offline Flutter app with the same features as Nine Tile](/feature-word9-flutter-app-test-plan.md) merged in #6 and marked stable, unverified.
+
+**Update**: [word9: offline Flutter app with the same features as Nine Tile](/feature-word9-flutter-app.md) merged in #6 and marked stable, unverified.
+
 **Update**: [Test plan: word9: offline Flutter app with the same features as Nine Tile](/feature-word9-flutter-app-test-plan.md) merged in #5 and marked stable, unverified.
 
 **Update**: [word9: offline Flutter app with the same features as Nine Tile](/feature-word9-flutter-app.md) merged in #5 and marked stable, unverified.

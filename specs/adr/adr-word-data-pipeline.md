@@ -8,7 +8,7 @@ links:
   - note: The plan that raised this decision
     rel: references
     to: feature-word9-flutter-app-plan
-status: draft
+status: stable
 tags:
   - adr
   - word-data

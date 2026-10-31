@@ -27,7 +27,7 @@ sources:
   - id: play-testing
     resource: https://support.google.com/googleplay/android-developer/answer/14151465
     title: Google Play testing requirements for new personal developer accounts
-status: draft
+status: stable
 tags:
   - android
   - flutter
