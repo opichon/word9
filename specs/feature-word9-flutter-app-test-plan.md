@@ -15,7 +15,7 @@ sources:
   - id: ninetile-us
     resource: https://github.com/opichon/ninetile/blob/3543b45/src/en-us/index.html
     title: Nine Tile web app, en-US variant
-status: stable
+status: draft
 tags:
   - android
   - flutter
@@ -149,9 +149,10 @@ C-1 Flutter on Android and iOS; C-2 minimum OS; C-3 portrait lock; C-4 centred w
 | C-36 | Cold start | NF-1 | Blocked |
 | C-37 | New puzzle or variant switch | NF-2 | Blocked |
 | C-38 | Tap or submit | NF-3 | Blocked |
-| R-1 | Acceptance criteria pass on internal-track builds | AT-1 to AT-18 | Covered |
-| R-2 | Closed test and production access | | Not tested |
-| R-3 | Live on both stores | | Not tested |
+| R-1 | Diawi install on both platforms | NF-10 | Covered |
+| R-2 | Acceptance criteria pass on internal-track builds | AT-1 to AT-18 | Covered |
+| R-3 | Closed test and production access | | Not tested |
+| R-4 | Live on both stores | | Not tested |
 
 ## 4. Acceptance tests
 
@@ -341,6 +342,7 @@ Feature: word9: offline Flutter app with the same features as Nine Tile
 | NF-7 | Builds | Clean CI checkout with no ninetile repository | Build Android and iOS release | Both builds succeed | None | C-1, C-22 |
 | NF-8 | Animations | Widget tree with the reduced-motion setting on | Shake the entry; add a found word; show a banner | No animation runs: the end state appears immediately | Clock | C-20 |
 | NF-9 | Screen-reader labels | Board with `nominally`, centre `L` | Read the labels of tiles and controls | Each tile is labelled with its letter; the centre tile with "l, centre letter" (en-GB) or "l, center letter" (en-US); Delete, Shuffle, Enter and New puzzle are labelled | None | C-21 |
+| NF-10 | Diawi distribution (manual) | A merge to `main`; an Android phone and a registered iPhone | Install from each Diawi link and open the app | The app installs and opens with a playable puzzle on both phones | None | R-1 |
 
 ## 6. Integration tests
 
@@ -398,7 +400,7 @@ None: new system.
 | Palette values | CT-5 | Light and dark colours from Nine Tile's stylesheet at `3543b45`: `bg`, `surface`, `ink`, `muted`, `line`, `tile`, `tile-ink`, `tile-used`, `anchor`, `anchor-ink`, `accent`, `good`, `bad`. |
 | Android emulator, iOS simulator | Automated acceptance | Recent Android phone image and iPhone simulator. |
 | Android tablet or foldable | CT-8 (optional real check) | Widget tests use sizes only, so no device is required. |
-| Release builds, phones | `@manual` tests, NF-5 | Installed release builds on one Android phone and one iPhone. |
+| Release builds, phones | `@manual` tests, NF-5, NF-10 | Release builds installed from Diawi on one Android phone and one registered iPhone. |
 | Performance devices | NF-1 to NF-3 | **Blocked**: see the open question in section 5. |
 
 ## 11. Not tested
@@ -409,8 +411,8 @@ None: new system.
 | C-33 | Store forms: verified by a person at release. |
 | C-34 | App Store review notes: verified by a person at release. |
 | C-35 | Icon approval, screenshots and listing text: verified by a person at release. |
-| R-2 | Closed test and production access: verified by a person at release. |
-| R-3 | Going live on both stores: verified by a person at release. |
+| R-3 | Closed test and production access: verified by a person at release. |
+| R-4 | Going live on both stores: verified by a person at release. |
 | Pixel-identical look (excluded by C-19) | The spec doesn't require it, so there are no golden-image tests. Layout is checked in review. |
 | Out-of-scope items in section 6 | The spec excludes them. |
 

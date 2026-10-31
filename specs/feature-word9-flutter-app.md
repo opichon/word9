@@ -26,7 +26,7 @@ sources:
   - id: scowl
     resource: http://wordlist.aspell.net/
     title: SCOWL word lists
-status: stable
+status: draft
 tags:
   - android
   - flutter

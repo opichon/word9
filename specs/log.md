@@ -2,6 +2,10 @@
 
 ## 2026-11-01
 
+**Creation** of [Implementation plan: word9: offline Flutter app with the same features as Nine Tile](/feature-word9-flutter-app-plan.md) and [ADR: word-data pipeline](/adr/adr-word-data-pipeline.md), status `draft`.
+
+**Update**: [word9: offline Flutter app with the same features as Nine Tile](/feature-word9-flutter-app.md) and [its test plan](/feature-word9-flutter-app-test-plan.md) set back to `draft` to add the Diawi distribution stage.
+
 **Creation** of [Test plan: word9: offline Flutter app with the same features as Nine Tile](/feature-word9-flutter-app-test-plan.md), status `draft`.
 
 **Update**: [word9: offline Flutter app with the same features as Nine Tile](/feature-word9-flutter-app.md) set back to `draft` to add store requirements found while planning: the Google Play closed test, landscape where Android overrides the portrait lock, the privacy policy, store materials and disclosing the test-mode gesture to App Review.
