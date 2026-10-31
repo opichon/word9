@@ -3,11 +3,10 @@
 class WordLists {
   WordLists({
     required this.answers,
-    required Set<String> accepted,
+    required this._accepted,
     required this.dictionary,
     required this.lang,
-  }) : _accepted = accepted,
-       _answerSet = answers.toSet();
+  }) : _answerSet = answers.toSet();
 
   factory WordLists.fromJson(Map<String, dynamic> json) => WordLists(
     accepted: (json['x'] as String).split(' ').toSet(),
