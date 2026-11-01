@@ -1,2 +1,4 @@
 [tools]
 flutter = "3.47.9"
+# Approved after inspecting 0.6.0: mise otherwise refuses packages with few weekly downloads.
+"npm:@dzangolab/repokb" = { version = "0.6.0", allow_low_downloads = true }
