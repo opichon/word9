@@ -16,6 +16,8 @@ flutter test integration_test  # acceptance tests, on a simulator or emulator
 flutter run
 ```
 
+To compare the project's Flutter version with the latest stable release, run `just flutter-latest`, which needs `curl` and `jq`.
+
 ### Android emulators
 
 With Android Studio and [just](https://just.systems) installed, this installs the images and creates a virtual device for each API level:
