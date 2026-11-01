@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:word9/state/game_controller.dart';
@@ -50,8 +52,13 @@ void main() {
     await game.tapControl('Enter');
 
     expect(game.message, '“LMNO” isn\'t in the word list');
-    await tester.pump(const Duration(milliseconds: 75));
-    expect(game.shakeOffset, isNot(0));
+    // Real frames don't land on a chosen moment, so sample across the shake.
+    var furthest = 0.0;
+    for (var frame = 0; frame < 15; frame++) {
+      await tester.pump(const Duration(milliseconds: 30));
+      furthest = max(furthest, game.shakeOffset.abs());
+    }
+    expect(furthest, greaterThan(0));
     expect(game.entry, isEmpty);
   });
 }
