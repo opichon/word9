@@ -1,0 +1,7 @@
+# okf-approve rules: https://github.com/dzangolab/okf-actions/tree/main/approve#rules
+rules:
+  # knowledge/: `status: draft` means inferred, not confirmed. A page becomes
+  # stable, and human-reviewed, only when one of its owners approves the pull request.
+  - paths: [knowledge/wiki/**, knowledge/_sources/**]
+    verify: [owners]
+    stable: on-verify

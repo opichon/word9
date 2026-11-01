@@ -1,0 +1,63 @@
+# Checks that knowledge/.catalog.sqlite matches the pages of what merging the
+# pull request would put on main, and summarises the catalog's changes against
+# main so a reviewer can see what the binary file holds. It catches a commit
+# made with --no-verify, without the pre-commit hook (.githooks/), replayed by
+# a rebase, or a catalog conflict resolved by keeping the wrong side.
+# See knowledge/AGENTS.md, "Catalog".
+name: kb-catalog
+
+on:
+  pull_request:
+    branches: [main]
+    paths: ["knowledge/**", ".claude/skills/repokb/scripts/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      # The default ref is refs/pull/<n>/merge: the PR merged into main. GitHub
+      # does not build it while the PR conflicts, so the job only runs once the
+      # catalog conflict is resolved. Depth 2 keeps main (HEAD^1) for the summary.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 2
+
+      - name: Check the catalog matches the pages
+        run: |
+          python3 .claude/skills/repokb/scripts/catalog.py --check knowledge/ || {
+            echo "::error file=knowledge/.catalog.sqlite::Catalog out of date for the merge result: merge or rebase on main, run python3 .claude/skills/repokb/scripts/catalog.py knowledge/ and commit knowledge/.catalog.sqlite"
+            exit 1
+          }
+
+      - name: Summarise the catalog's changes against main
+        run: |
+          git show HEAD^1:knowledge/.catalog.sqlite > "$RUNNER_TEMP/base.sqlite" 2>/dev/null || rm -f "$RUNNER_TEMP/base.sqlite"
+          python3 - "$RUNNER_TEMP/base.sqlite" knowledge/.catalog.sqlite >> "$GITHUB_STEP_SUMMARY" <<'EOF'
+          import os, sqlite3, sys
+
+          def load(path):
+              if not os.path.exists(path):
+                  return {}, {}
+              db = sqlite3.connect(path)
+              rows = {r[0]: r for r in db.execute("SELECT * FROM pages")}
+              meta = dict(db.execute("SELECT key, value FROM meta"))
+              db.close()
+              return rows, meta
+
+          base, _ = load(sys.argv[1])
+          head, meta = load(sys.argv[2])
+          added = sorted(set(head) - set(base))
+          removed = sorted(set(base) - set(head))
+          changed = sorted(p for p in set(head) & set(base) if head[p] != base[p])
+          print("## Knowledge base catalog\n")
+          print(f"Up to date with the merge result: {len(head)} pages, inputs digest `{meta.get('inputs_digest', '?')[:12]}`.\n")
+          print(f"Against main: {len(added)} added, {len(changed)} changed, {len(removed)} removed.\n")
+          for label, paths in (("Added", added), ("Changed", changed), ("Removed", removed)):
+              if paths:
+                  print(f"<details><summary>{label} ({len(paths)})</summary>\n")
+                  print("\n".join(f"- `{p}`" for p in paths))
+                  print("\n</details>\n")
+          EOF

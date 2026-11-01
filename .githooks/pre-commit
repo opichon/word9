@@ -1,0 +1,17 @@
+#!/bin/sh
+# Rebuilds knowledge/.catalog.sqlite from the staged pages when a commit
+# changes the knowledge base or its scripts, and stages it with the commit.
+# Enable once per clone: git config core.hooksPath .githooks
+set -eu
+
+# A conflict `repokb update` left behind must not reach a commit
+if git grep --cached -Il '^<<<<<<< installed' -- knowledge/ .claude/skills/repokb .githooks .github/workflows REPOKB.md; then
+  echo "Resolve the conflict markers from repokb update in the files above." >&2
+  exit 1
+fi
+
+changed=$(git diff --cached --name-only -- knowledge/ .claude/skills/repokb/scripts | grep -vx 'knowledge/.catalog.sqlite' || true)
+[ -n "$changed" ] || exit 0
+
+python3 .claude/skills/repokb/scripts/catalog.py --staged knowledge
+git add knowledge/.catalog.sqlite
