@@ -41,6 +41,23 @@ void main() {
     }
   });
 
+  testWidgets('AT-2 detail: a rejected entry visibly shakes, then settles', (
+    tester,
+  ) async {
+    final game = await open(tester);
+
+    await game.enter('mno');
+    await game.tapControl('Enter');
+    await tester.pump(const Duration(milliseconds: 75));
+    expect(game.shakeOffset, -6);
+
+    await tester.pump(const Duration(milliseconds: 150));
+    expect(game.shakeOffset, 6);
+
+    await tester.pump(const Duration(milliseconds: 75));
+    expect(game.shakeOffset, 0);
+  });
+
   testWidgets('CT-9: hardware keys change nothing, and no keyboard opens', (
     tester,
   ) async {
