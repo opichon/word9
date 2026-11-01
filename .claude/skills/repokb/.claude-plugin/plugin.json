@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "repokb",
+  "description": "Skills that read from and write to this project's knowledge/ knowledge base: load it, bootstrap it, resync it with the code, ingest external material or a working session into it, and finish an update of repokb itself.",
+  "version": "0.8.0",
+  "author": {
+    "name": "Dzango Technologies",
+    "email": "info@dzango.com",
+    "url": "https://dzango.com"
+  },
+  "homepage": "https://github.com/dzangolab/repokb",
+  "license": "MIT",
+  "keywords": [
+    "knowledge-base",
+    "okf",
+    "wiki",
+    "documentation"
+  ]
+}

@@ -1,0 +1,5 @@
+ai-xf: "0.5"
+name: word9
+# Level 1, AI-XF Core: every page outside raw/ but an index.md carries a unique `id`.
+conformance: 1
+repokb_version: "0.8.0"

@@ -1,0 +1,3 @@
+# repokb: parallel branches add entries to the same day's log file. Keep both sides' entries.
+# GitHub ignores this: on a conflict there, run `git merge main` locally and push.
+**/_log/*.md merge=union
