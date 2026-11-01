@@ -6,7 +6,7 @@ Specs, test plan and implementation plan are in [specs/](specs/index.md).
 
 ## Development
 
-Uses Flutter 3.47.4.
+Uses Flutter 3.47.9, installed with [mise](https://mise.jdx.dev): run `mise install` in this folder.
 
 ```sh
 flutter pub get

@@ -15,7 +15,7 @@ jobs:
         with:
           cache: true
           channel: stable
-          flutter-version: 3.47.4
+          flutter-version: 3.47.9
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -41,7 +41,7 @@ jobs:
         with:
           cache: true
           channel: stable
-          flutter-version: 3.47.4
+          flutter-version: 3.47.9
       - run: flutter build apk --release
       # NF-4: the release build must not declare the INTERNET permission
       - name: Check the release build has no INTERNET permission
@@ -62,7 +62,7 @@ jobs:
         with:
           cache: true
           channel: stable
-          flutter-version: 3.47.4
+          flutter-version: 3.47.9
       - name: Boot an iPhone simulator
         run: |
           udid="$(xcrun simctl list devices available -j | python3 -c "import json,sys; d=json.load(sys.stdin)['devices']; print(next(x['udid'] for r in sorted(d, reverse=True) if 'iOS' in r for x in d[r] if x['name'].startswith('iPhone')))")"
@@ -89,7 +89,7 @@ jobs:
         with:
           cache: true
           channel: stable
-          flutter-version: 3.47.4
+          flutter-version: 3.47.9
       - run: flutter build ios --release --no-codesign
 
   test:
@@ -100,7 +100,7 @@ jobs:
         with:
           cache: true
           channel: stable
-          flutter-version: 3.47.4
+          flutter-version: 3.47.9
       - run: flutter pub get
       - run: dart format --output=none --set-exit-if-changed lib test integration_test
       - run: flutter analyze
