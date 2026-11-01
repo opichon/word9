@@ -2,6 +2,8 @@
 
 ## 2026-11-01
 
+**Update**: [Design: word9: offline Flutter app with the same features as Nine Tile](/feature-word9-flutter-app-design.md) merged in #20 and marked stable, unverified.
+
 **Creation** of [Design: word9: offline Flutter app with the same features as Nine Tile](/feature-word9-flutter-app-design.md), status `draft`.
 
 **Creation** of [Implementation plan: word9: offline Flutter app with the same features as Nine Tile](/feature-word9-flutter-app-plan.md) and [ADR: word-data pipeline](/adr/adr-word-data-pipeline.md), status `draft`.

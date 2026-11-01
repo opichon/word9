@@ -14,7 +14,7 @@ links:
   - note: The implementation plan whose sub-system names this design uses
     rel: references
     to: feature-word9-flutter-app-plan
-status: draft
+status: stable
 tags:
   - android
   - architecture
