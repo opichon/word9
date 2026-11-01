@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:word9/state/game_controller.dart';
@@ -52,13 +50,9 @@ void main() {
     await game.tapControl('Enter');
 
     expect(game.message, '“LMNO” isn\'t in the word list');
-    // Real frames don't land on a chosen moment, so sample across the shake.
-    var furthest = 0.0;
-    for (var frame = 0; frame < 15; frame++) {
-      await tester.pump(const Duration(milliseconds: 30));
-      furthest = max(furthest, game.shakeOffset.abs());
-    }
-    expect(furthest, greaterThan(0));
+    // The emulator's frames can be slower than the 300 ms shake, so check here
+    // that it's triggered. The game screen's widget test checks the movement.
+    expect(game.controller.shakes, 1);
     expect(game.entry, isEmpty);
   });
 }
