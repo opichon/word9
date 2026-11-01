@@ -12,6 +12,19 @@ android_device := "pixel_8"
 default:
     @just --list
 
+# Show the latest stable Flutter version and the one this project pins.
+flutter-latest:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    latest="$(curl -fsS https://storage.googleapis.com/flutter_infra_release/releases/releases_macos.json \
+      | jq -r '.current_release.stable as $hash | .releases[] | select(.hash == $hash) | .version' \
+      | sort -u)"
+    [ -n "$latest" ] || { echo "error: couldn't find the latest stable Flutter version" >&2; exit 1; }
+
+    echo "Latest stable: $latest"
+    echo "This project:  $(sed -n 's/^  flutter: //p' pubspec.yaml)"
+
 # Install Android emulator images and create a virtual device for each API level.
 setup-android:
     #!/usr/bin/env bash
