@@ -53,6 +53,17 @@ jobs:
             echo "::error::The release build declares the INTERNET permission"
             exit 1
           fi
+      # Step 8: with key.properties, release builds use that key. This key is temporary and only signs this check.
+      - name: Check a release build uses the signing key
+        run: |
+          password="$(openssl rand -hex 24)"
+          keytool -genkeypair -keystore "$RUNNER_TEMP/ci.p12" -storetype PKCS12 -alias upload -keyalg RSA -keysize 2048 -validity 1 -storepass "$password" -dname "CN=word9-ci-check"
+          printf 'keyAlias=upload\nkeyPassword=%s\nstoreFile=%s\nstorePassword=%s\n' "$password" "$RUNNER_TEMP/ci.p12" "$password" > android/key.properties
+          flutter build apk --release
+          rm android/key.properties
+          apksigner="$(find "$ANDROID_HOME/build-tools" -name apksigner | sort | tail -n 1)"
+          "$apksigner" verify --print-certs build/app/outputs/flutter-apk/app-release.apk | tee "$RUNNER_TEMP/certs.txt"
+          grep -q 'CN=word9-ci-check' "$RUNNER_TEMP/certs.txt"
 
   ios-acceptance:
     runs-on: macos-latest
