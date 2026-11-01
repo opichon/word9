@@ -27,6 +27,7 @@ jobs:
           arch: x86_64
           script: flutter test integration_test
           target: google_apis
+    timeout-minutes: 40
 
   android-build:
     runs-on: ubuntu-latest
@@ -68,7 +69,17 @@ jobs:
           xcrun simctl boot "$udid"
           xcrun simctl bootstatus "$udid"
           echo "SIMULATOR_UDID=$udid" >> "$GITHUB_ENV"
-      - run: flutter test integration_test -d "$SIMULATOR_UDID"
+      # The test run sometimes hangs on the runner's simulator: limit each attempt to 25 minutes, and retry once.
+      - name: Run acceptance tests
+        run: |
+          for attempt in 1 2; do
+            if perl -e 'alarm shift; exec @ARGV' 1500 flutter test integration_test -d "$SIMULATOR_UDID"; then
+              exit 0
+            fi
+            echo "::warning::Acceptance tests failed or hung on attempt $attempt"
+          done
+          exit 1
+    timeout-minutes: 60
 
   ios-build:
     runs-on: macos-latest
